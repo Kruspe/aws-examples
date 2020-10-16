@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Automate stack creation when code is committed
+
+Resources:
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+       Statement:
+         - Effect: Allow
+           Action:
+             - "s3:PutObject"
+           Resource:
+             - !Ref CodeBuildArtifacts
+         - Effect: Allow
+           Action:
+             - "codecommit:ListRepositories"
+
+  CloudFormationS3:
+    Type: AWS::S3::Bucket
+    Properties:
+     BucketName: "cloudformation-templates-automated"
+     VersioningConfiguration:
+       Status: Enabled
+  CodeBuildArtifacts:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "code-pipeline-all-artifacts"
+
+
+  TemplateAutomation:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: "cloudformation-update"
+      ArtifactStore:
+        Type: S3
+        Location: !Ref CodeBuildArtifacts
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: "TestAction"
+      RoleArn: !Ref CodePipelineRole
+
+
+
