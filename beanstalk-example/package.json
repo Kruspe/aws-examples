@@ -1,0 +1,24 @@
+{
+  "name": "beanstalk-example",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "engines": {
+    "node": "12.18.4"
+  },
+  "repository": "https://git-codecommit.eu-central-1.amazonaws.com/v1/repos/beanstalk-example",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rm -rf dist express-app.zip",
+    "build": "babel src -d dist && zip -j express-app.zip dist/index.js package.json",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "nodemon": "^2.0.6"
+  }
+}

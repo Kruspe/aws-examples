@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Beanstalk Example
+Resources:
+#  BeanstalkLaunchEC2Role:
+#    Type: AWS::IAM::Role
+#    Properties:
+#      AssumeRolePolicyDocument:
+#        Version: "2012-10-17"
+#        Statement:
+#          - Effect: "Allow"
+#            Principal:
+#              Service:
+#                - "ec2.amazonaws.com"
+#            Action:
+#              - "sts:AssumeRole"
+#      ManagedPolicyArns:
+#        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+#        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+#        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+
+  Application:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: Express Application
+  ApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref Application
+      SourceBundle:
+        S3Bucket: 'elasticbeanstalk-eu-central-1-537701095164'
+        S3Key: express-app.zip
+  ApplicationEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref Application
+      SolutionStackName: 64bit Amazon Linux 2 v5.2.2 running Node.js 12
+      OptionSettings:
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: aws-elasticbeanstalk-ec2-role
+      VersionLabel: !Ref ApplicationVersion
