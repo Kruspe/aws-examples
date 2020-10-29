@@ -1,22 +1,28 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Beanstalk Example
 Resources:
-#  BeanstalkLaunchEC2Role:
-#    Type: AWS::IAM::Role
-#    Properties:
-#      AssumeRolePolicyDocument:
-#        Version: "2012-10-17"
-#        Statement:
-#          - Effect: "Allow"
-#            Principal:
-#              Service:
-#                - "ec2.amazonaws.com"
-#            Action:
-#              - "sts:AssumeRole"
-#      ManagedPolicyArns:
-#        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
-#        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
-#        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+  BeanstalkLaunchEC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+  BeanstalkLaunchEC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref BeanstalkLaunchEC2Role
 
   Application:
     Type: AWS::ElasticBeanstalk::Application
@@ -37,5 +43,5 @@ Resources:
       OptionSettings:
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: aws-elasticbeanstalk-ec2-role
+          Value: !Ref BeanstalkLaunchEC2InstanceProfile
       VersionLabel: !Ref ApplicationVersion

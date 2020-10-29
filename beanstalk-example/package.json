@@ -8,8 +8,9 @@
   "repository": "https://git-codecommit.eu-central-1.amazonaws.com/v1/repos/beanstalk-example",
   "license": "MIT",
   "scripts": {
-    "prebuild": "rm -rf dist express-app.zip",
-    "build": "babel src -d dist && zip -j express-app.zip dist/index.js package.json",
+    "prebuild": "rm -rf dist",
+    "build": "babel src -d dist",
+    "postbuild": "cp -r package.json public dist",
     "start": "node index.js"
   },
   "dependencies": {
